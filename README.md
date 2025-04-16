@@ -4,7 +4,7 @@ This project allows using the Llama 3.2-Vision model (or similar), an instructio
 
 ## Ollama
 
-The python code relies on the `Ollama Python Library` to interact with Ollama (a tool designed for running open-source large language models - LLMs - directly on local hardware), so first you have to install [Ollama](https://ollama.com/download) and then download the model, e.g.: [llama3.2-vision](https://ollama.com/library/llama3.2-vision:11b) (available with 11b parameters and 90b parameters - depending on local memory availability):
+The python code relies on the `Ollama Python Library` to interact with [Ollama](https://ollama.com/) (a tool designed for running open-source large language models - LLMs - directly on local hardware), so first you have to install [Ollama](https://ollama.com/download) and then download the model, e.g.: [llama3.2-vision](https://ollama.com/library/llama3.2-vision:11b) (available with 11b parameters and 90b parameters - depending on local memory availability):
 
 `ollama pull llama3.2-vision:11b`
 
