@@ -20,6 +20,28 @@ You must then start the Ollama server before running the Python code:
 
 `ollama serve`
 
+## Installation
+
+1. **Clone the repository**:
+
+    ```bash
+    git clone https://github.com/SigfridoCorradi/VisionOCR
+    cd VisionOCR
+    ```
+
+2. **Create a virtual environment** (optional but **strongly** recommended):
+
+    ```bash
+    python -m venv venv
+    source venv/bin/activate
+    ```
+
+3. **Install dependencies**:
+
+    ```bash
+    pip3 install -r requirements.txt
+    ```
+
 ## Code structure
 
 The code is structured as class **VisionOCR**. Note the 4 class constants:
