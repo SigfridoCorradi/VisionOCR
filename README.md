@@ -1,6 +1,12 @@
 # Optical character recognition using LLM optimized for visual recognition (like `llama3.2-vision`)
 
-This project allows using the Llama 3.2-Vision model (or similar), an instruction-tuned model optimized for visual recognition, in order to act as an optical character recognition (OCR) and output transcribed text (in two possible modes: flat text and Markdown) from an image.
+This project provides a Python tool to perform Optical Character Recognition (OCR) on images using a local or remote Ollama instance hosting a vision-capable Large Language Model (LLM), such as Llama 3.2-Vision (or similar).
+
+Traditional OCR software often relies on predefined fonts and layouts, which can struggle with complex images, varied styling, or specific document structures. By leveraging the advanced visual understanding capabilities of modern vision LLMs, this tool offers a more flexible and potentially more accurate approach to transcribing text from images, including the ability to interpret structural elements and output in formats like Markdown.
+
+The tool supports two primary output modes:
+1.  **Plain Text:** A straightforward transcription of detected text, attempting to preserve basic structure.
+2.  **Markdown:** A transcription structured using Markdown syntax to reflect the visual layout and hierarchy of the original image.
 
 ## Ollama
 
@@ -39,8 +45,75 @@ You must then start the Ollama server before running the Python code:
 3. **Install dependencies**:
 
     ```bash
-    pip3 install -r requirements.txt
+    pip install -r requirements.txt
     ```
+
+## Usage
+
+The `VisionOCR.py` file can be run directly for a quick test using the `__main__` block, or the `VisionOCR` class can be imported and used in your own Python scripts.
+
+### Using the Example Script (`__main__`)
+
+The example block demonstrates how to use the `VisionOCR` class with default settings and an override.
+
+1.  **Place an Image:** Make sure you have an image file (e.g., `test.jpg`) in the same directory as `VisionOCR.py`, or update the `custom_IMAGE_FILE_PATH` variable in the script to point to your image.
+2.  **Configure (Optional):** Modify the `custom_IMAGE_FILE_PATH`, `custom_OLLAMA_HOST_ADDR`, or `custom_MODEL_NAME` variables in the `__main__` block if needed.
+3.  **Run the Script:** Execute the script from your terminal:
+    ```bash
+    python VisionOCR.py
+    ```
+
+The script will attempt to connect to Ollama, perform OCR on the specified image using both the default plain text prompt and the Markdown prompt, and print the results to the console.
+
+### Using the `VisionOCR` Class in Your Own Code
+
+You can import the `VisionOCR` class and use its methods in your projects:
+
+```python
+from VisionOCR import VisionOCR
+
+# Configuration
+ollama_host = "http://127.0.0.1:11434"
+model_name = "llama3.2-vision:11b"
+image_file = "path/to/your/image.jpg"
+temperature_setting = 0.3 #Adjust temperature (lower is more deterministic, higher more creative)
+
+try:
+    # Initialize the OCR tool
+    ocr_tool = VisionOCR(ollama_host=ollama_host, model=model_name)
+
+    #Perform Plain Text OCR
+    print("\nPlain Text OCR Result:")
+    plain_text = ocr_tool.perform_vision_ocr(
+        image_path=image_file,
+        temperature=temperature_setting,
+        # Using the default prompt
+    )
+    if plain_text:
+        print(plain_text)
+    else:
+        print("[ERROR] Plain text OCR failed.")
+
+    #Perform Markdown OCR
+    print("\nMarkdown OCR Result:")
+    markdown_text = ocr_tool.perform_vision_ocr(
+        image_path=image_file,
+        temperature=temperature_setting,
+        system_prompt_override=VisionOCR.MARKDOWN_TEXT_PROMPT #Using the Markdown prompt
+    )
+    if markdown_text:
+        print(markdown_text)
+    else:
+        print("[ERROR] Markdown OCR failed.")
+
+except ConnectionError as e:
+    print(f"[FATAL ERROR] Could not connect to Ollama: {e}")
+except FileNotFoundError as e:
+    print(f"[FATAL ERROR] Image file not found: {e}")
+except Exception as e:
+    print(f"[FATAL ERROR] An unexpected error occurred: {e}")
+
+```
 
 ## Code structure
 
@@ -80,3 +153,12 @@ plain_text_result = ocr_vision.perform_vision_ocr(
 > Let us pay attention to the value of `temperature` parameter
 
 In the example given in `__main__` two queries are performed for flat text and Markdown, given an image `test.jpg`.
+
+## Prompts
+
+The tool includes two predefined prompts optimized for different output formats:
+
+*   `VisionOCR.DEFAULT_TEXT_PROMPT`: Designed for extracting plain text while preserving basic structure.
+*   `VisionOCR.MARKDOWN_TEXT_PROMPT`: Designed for extracting text and structuring it using Markdown syntax based on the visual layout.
+
+You can also create your own custom prompt string and pass it using `system_prompt_override`.
